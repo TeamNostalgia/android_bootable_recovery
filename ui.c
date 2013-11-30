@@ -394,6 +394,8 @@ static void *progress_thread(void *cookie)
 
 static int rel_sum = 0;
 
+static int absylock = 0;
+
 static int input_callback(int fd, short revents, void *data)
 {
     struct input_event ev;
@@ -415,7 +417,27 @@ static int input_callback(int fd, short revents, void *data)
 
     if (ev.type == EV_SYN) {
         return 0;
-    } else if (ev.type == EV_REL) {
+    } else if(ev.type == EV_ABS) {
+	  if (ev.code == ABS_Y) {
+		if(ev.value >= 0 && ev.value <= 200) {
+	 	   if(absylock==0) {
+			fake_key = 1;
+			ev.type = EV_KEY;
+			ev.code = KEY_UP;
+			ev.value = 1;
+                        absylock=1;
+                   }
+		} else if(ev.value >= 823 && ev.value <= 1023) {
+                    if(absylock==0) {
+			fake_key = 1;
+			ev.type = EV_KEY;
+			ev.code = KEY_DOWN;
+			ev.value = 1;
+                        absylock=1;
+                    }	
+		} else absylock=0;
+	  }
+        } else if (ev.type == EV_REL) {
         if (ev.code == REL_Y) {
             // accumulate the up or down motion reported by
             // the trackball.  When it exceeds a threshold
