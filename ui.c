@@ -419,7 +419,7 @@ static int input_callback(int fd, short revents, void *data)
         return 0;
     } else if(ev.type == EV_ABS) {
 	  if (ev.code == ABS_Y) {
-		if(ev.value >= 0 && ev.value <= 200) {
+		if(ev.value >= -512 && ev.value <= -312) {
 	 	   if(absylock==0) {
 			fake_key = 1;
 			ev.type = EV_KEY;
@@ -427,7 +427,7 @@ static int input_callback(int fd, short revents, void *data)
 			ev.value = 1;
                         absylock=1;
                    }
-		} else if(ev.value >= 823 && ev.value <= 1023) {
+		} else if(ev.value >= 312 && ev.value <= 512) {
                     if(absylock==0) {
 			fake_key = 1;
 			ev.type = EV_KEY;
